@@ -1,0 +1,30 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "url shortening micro service",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.14.1",
+    "mongodb": "^2.2.22"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "scripts": {
+    "test": "make test",
+    "dev" : "nodemon js/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mstaebler/URL-Shortener.git"
+  },
+  "keywords": [
+    "npm"
+  ],
+  "author": "Mark Staebler <markstaebler@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mstaebler/URL-Shortener/issues"
+  },
+  "homepage": "https://github.com/mstaebler/URL-Shortener#readme"
+}
