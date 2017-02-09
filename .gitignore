@@ -1,5 +1,8 @@
-# Database
-db.js
+# Environment Variables
+.env
+
+# Node modules
+node_modules
 
 # Windows image file caches
 Thumbs.db

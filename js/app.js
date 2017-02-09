@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const db = require('./db.js')
+const db = require('./db')
 
 // Connect to the database
 db.connect()
