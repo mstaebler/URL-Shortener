@@ -1,32 +1,39 @@
-const express = require('express')
-const app = express()
-const db = require('./db')
+const express = require('express'),
+      app = express(),
+      db = require('./db'),
+      dotenv = require('dotenv').config();
 
-// Connect to the database
-db.connect()
 
-function uid(){
-  return Math.floor(new Date().valueOf()* Math.random())
-}
+db.connect();
 
+// parse URL into a JSON object and shorten URL
 function shorten(longURL){
-  return {'longURL':longURL,'shortURL':uid()}
+  var tempObj = {'longURL':longURL,'shortURL':db.uid()};
+  db.insertURL(tempObj);
+  return tempObj;
 }
+
+// Lookup shortened url and redirect to original url
+function lookup(shortURL){
+  return db.lookupURL(shortURL);
+}
+
+//store JSON object to mongoDB
 
 app.get('/', (req, res) => {
-  res.send('hello world')
+  res.send('hello world');
 })
 
 //read arguments passed to URL and save into JSON object
 app.get('/:tagId', (req, res) => {
   // res.send('tagId: '+ req.params.tagId)
-  res.send(shorten(req.params.tagId))
+  //res.send(shorten(req.params.tagId))
+
+  //If shortender URL is sent redirect to stored full URL
+  //Return shortened URL to sender
+  res.send(shorten(req.params.tagId));
+  // db.lookupURL({'shortURL':req.params.tagID}).length === 0 ? res.send(shorten(req.params.tagId)) : res.send(lookup(req.params.tagId))
+
 })
 
 app.listen(3000)
-
-//parse URL into a JSON object
-//store JSON object to mongoDB
-//shorten URL
-//Return shortened URL to sender
-//If shortender URL is sent redirect to stored full URL
