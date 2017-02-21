@@ -23,8 +23,8 @@ module.exports = {
   lookupURL: (id, callback) => {
     // console.log("lookup"+urls);
     urls.find({'longURL': id}).toArray((err, docs) => {
-      //console.log("Found the following records");
-      //console.log(docs);
+      console.log("Found the following records");
+      console.log(docs);
       //callback(docs)
       return docs;
     })
@@ -32,6 +32,6 @@ module.exports = {
   uid: () => {
     var uid = Object.keys(urls.find()).length;
     console.log("the current uid is "+uid);
-    return uid++;
+    return uid+1;
   }
 }
