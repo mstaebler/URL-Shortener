@@ -4,6 +4,7 @@
   "description": "url shortening micro service",
   "main": "app.js",
   "dependencies": {
+    "bluebird": "^3.4.7",
     "dotenv": "^4.0.0",
     "express": "^4.14.1",
     "mongodb": "^2.2.22",
@@ -14,7 +15,7 @@
   },
   "scripts": {
     "test": "make test",
-    "dev": "nodemon js/app.js"
+    "dev": "nodemon public/js/app.js"
   },
   "repository": {
     "type": "git",

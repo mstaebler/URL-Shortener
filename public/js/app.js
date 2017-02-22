@@ -1,46 +1,45 @@
+require('dotenv').config();
+
 const express = require('express'),
       app = express(),
-      db = require('./db'),
       path = require('path'),
-      dotenv = require('dotenv').config();
+      Promise = require('bluebird');
 
+module.exports = require('./db')().then(runApp);
 
-//db.connect();
+function runApp(db){
+  app.use(express.static(path.join(__dirname, 'public')));
 
-// parse URL into a JSON object and shorten URL
-function shorten(longURL){
-  var tempObj = {'longURL':longURL,'shortURL':db.uid()};
-  db.insertURL(tempObj);
-  return tempObj;
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../index.html'));
+  });
+
+  app.post('/api/shorten', (req, res) => {
+    return db.insertURL(req.whatever.whatever)
+      .then(res => res.json({whatever: res}));
+  });
+
+  //read arguments passed to URL and save into JSON object
+  app.get('/:tagId', (req, res) => {
+    return db.lookupURL(req.params.tagId)
+    .then(url => res.json({url: url}));
+  });
+
+  app.get('/failhard', (req, res) => {
+    return Promise.reject(new Error('Me a stupid error yo.'));
+    // calling this endpoint will result in an error being handed into next()
+    // which will bypass any other handlers defined below this, and go straight to the
+    // error handler at the end of this file that i added
+  });
+
+  // this will catch errs, or at least it should, you should try it, easy to do
+  app.use(function(err, req, res, next) {
+      res.error = err;
+      res.status(err.status || 500);
+      res.json({
+          message: err.message
+      });
+  });
+
+  app.listen(3000);
 }
-
-// Lookup shortened url and redirect to original url
-function lookup(shortURL){
-  return db.lookupURL(shortURL);
-}
-
-//store JSON object to mongoDB
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.post('/api/shorten', (req, res) => {
-  // route to create and return a shortened url
-});
-
-//read arguments passed to URL and save into JSON object
-app.get('/:tagId', (req, res) => {
-  // res.send('tagId: '+ req.params.tagId)
-  //res.send(shorten(req.params.tagId))
-
-  //If shortender URL is sent redirect to stored full URL
-  //Return shortened URL to sender
-  res.send(lookup(req.params.tagId));
-  // db.lookupURL({'shortURL':req.params.tagID}).length === 0 ? res.send(shorten(req.params.tagId)) : res.send(lookup(req.params.tagId))
-
-});
-
-app.listen(3000);

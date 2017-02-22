@@ -1,37 +1,26 @@
-const MongoClient = require('mongodb').MongoClient,
-      dotenv = require('dotenv').config();
-let urls = {};
+require('dotenv').config();
 
-// Connect to the db
-module.exports = {
-  connect: () => {
-    MongoClient.connect("mongodb://"+process.env.DB_USER+":"+process.env.DB_PASS+"@"+process.env.DB_HOST, (err, db) => {
-      if(!err) {
-        console.log("we are connected");
-        urls = db.collection('urls');
-      }else{
-        console.log('failed to connect');
-      }
-    })
-  },
-  insertURL: (obj) => {
-    urls.save(obj, (err, result) => {
-      if(err) return console.log(err);
-      //console.log('saved to database '+ obj);
-    })
-  },
-  lookupURL: (id, callback) => {
-    // console.log("lookup"+urls);
-    urls.find({'longURL': id}).toArray((err, docs) => {
-      console.log("Found the following records");
-      console.log(docs);
-      //callback(docs)
-      return docs;
-    })
-  },
-  uid: () => {
-    var uid = Object.keys(urls.find()).length;
-    console.log("the current uid is "+uid);
-    return uid+1;
-  }
+var Promise = require('bluebird'),
+    MongoClient = require('mongodb').MongoClient,
+    db;
+
+Promise.promisifyAll(MongoClient);
+
+module.exports = function() {
+  return MongoClient.connectAsync(process.env.MONGO_CONNECTION_STRING)
+  .then(connection => {
+    db = connection.collection('urls');
+    return {
+      insertURL,
+      lookupURL
+    };
+  });
+};
+
+function insertURL(obj){
+  db.save(obj);
+}
+
+function lookupURL(id) {
+  return Promise.resolve(db.find({'longURL': id}).toArray());
 }
