@@ -14,15 +14,27 @@ function runApp(db){
     res.sendFile(path.join(__dirname, '../index.html'));
   });
 
-  app.post('/api/shorten', (req, res) => {
-    return db.insertURL(req.whatever.whatever)
-      .then(res => res.json({whatever: res}));
-  });
+  // app.post('/api/shorten', (req, res) => {
+  //   return db.insertURL(req.whatever.whatever)
+  //     .then(res => res.json({whatever: res}));
+  // });
 
   //read arguments passed to URL and save into JSON object
+  // If the URL is in the database return the database entry. If it is not in the database
+  // store it in there and return a short link
   app.get('/:tagId', (req, res) => {
     return db.lookupURL(req.params.tagId)
-    .then(url => res.json({url: url}));
+    .then(url => {
+      console.log('url: '+url);
+      if(!url){
+        db.insertURL({'longURL': req.params.tagId});
+        res.json({'longURL': req.params.tagId});
+      }
+      else res.json({url: url});
+    });
+    // if(db.lookupURL(req.params.tagId) === [])
+    // console.log(db.lookupURL(req.params.tagId));
+    //res.json({url: url})
   });
 
   app.get('/failhard', (req, res) => {
