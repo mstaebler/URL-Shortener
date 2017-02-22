@@ -19,9 +19,9 @@ module.exports = function() {
 };
 
 function insertURL(obj){
-  db.save(obj);
+  db.insertOne(obj);
 }
 
 function lookupURL(id) {
-  return Promise.resolve(db.find({'longURL': id}).toArray());
+  return Promise.resolve(db.find({'longURL': id}).limit(1).toArray());
 }
