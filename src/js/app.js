@@ -5,28 +5,29 @@ const express = require('express'),
       path = require('path'),
       Promise = require('bluebird'),
       bodyParser = require('body-parser'),
-      morgan = require('morgan'),
-      base = require('./encodeBase34');
+      morgan = require('morgan');
 
 module.exports = require('./db')().then(runApp);
 
 function runApp(db){
   app.use(express.static(path.join(__dirname, '../../public')));
   app.use(bodyParser.json());
-  app.use(morgan('tiny'));
+  app.use(morgan('common'));
 
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/index.html'));
   });
 
   app.post('/api/shorten', (req, res) => {
-    return db.insertURL(base.req.body)
-    .then(val => res.json({val: val}));
+    return db.insertURL(req.body)
+    .then(obj => res.json(obj));
+    //.catch(err => next(err));
   });
 
   app.get('/:tagId', (req, res) => {
     return db.lookupURL(req.params.tagId)
     .then(url => res.json({url: url}));
+    //.catch(err => next(err));
   });
 
   app.get('/failhard', (req, res) => {
