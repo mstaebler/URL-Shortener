@@ -2,6 +2,7 @@ require('dotenv').config();
 
 var Promise = require('bluebird'),
     MongoClient = require('mongodb').MongoClient,
+    ObjectId = require('mongodb').ObjectId,
     db;
 
 Promise.promisifyAll(MongoClient);
@@ -21,6 +22,6 @@ function insertURL(obj){
   return Promise.resolve(db.insertOne(obj));
 }
 
-function lookupURL(url) {
-  return Promise.resolve(db.find({'shortURL': url}).limit(1).toArray());
+function lookupURL(id) {
+  return Promise.resolve(db.find({_id: ObjectId(id)}).limit(1).toArray());
 }

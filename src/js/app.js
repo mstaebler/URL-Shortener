@@ -18,16 +18,16 @@ function runApp(db){
     res.sendFile(path.join(__dirname, '../../public/index.html'));
   });
 
-  app.post('/api/shorten', (req, res) => {
+  app.post('/api/shorten', (req, res, next) => {
     return db.insertURL(req.body)
-    .then(obj => res.json(obj));
-    //.catch(err => next(err));
+    .then(obj => res.json({shortURL: `localhost:3000/${obj.insertedId}`}))
+    .catch(next);
   });
 
-  app.get('/:tagId', (req, res) => {
-    return db.lookupURL(req.params.tagId)
-    .then(url => res.json({url: url}));
-    //.catch(err => next(err));
+  app.get('/:shortURL', (req, res, next) => {
+    return db.lookupURL(req.params.shortURL)
+    .then(arr => res.redirect(`http://${arr[0].longURL}`))
+    .catch(next);
   });
 
   app.get('/failhard', (req, res) => {
@@ -44,6 +44,7 @@ function runApp(db){
       res.json({
           message: err.message
       });
+      next(err);
   });
 
   app.listen(3000);
