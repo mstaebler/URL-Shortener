@@ -13,15 +13,24 @@ module.exports = function() {
     count = connection.collection('count');
     return {
       insertURL,
-      lookupURL
+      lookupURL,
+      getGlobalCount
     };
   });
 };
 
 function insertURL(obj){
-  db.insertOne(obj);
+  return Promise.resolve(db.insertOne(obj));
 }
 
 function lookupURL(id) {
-  return Promise.resolve(db.find({'longURL': id}).limit(1).toArray());
+  return Promise.resolve(db.find({'shortURL': id}).limit(1).toArray());
+}
+
+function getGlobalCount() {
+    return count.find({counter: }) || 0;
+}
+
+function incrementGlobalCount() {
+    count.findOneAndUpdate()
 }

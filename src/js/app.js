@@ -4,32 +4,29 @@ const express = require('express'),
       app = express(),
       path = require('path'),
       Promise = require('bluebird'),
-      bodyParser = require('body-parser');
+      bodyParser = require('body-parser'),
+      morgan = require('morgan'),
+      base = require('./encodeBase34');
 
 module.exports = require('./db')().then(runApp);
 
 function runApp(db){
   app.use(express.static(path.join(__dirname, '../../public')));
   app.use(bodyParser.json());
+  app.use(morgan('tiny'));
 
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/index.html'));
   });
 
   app.post('/api/shorten', (req, res) => {
-    console.log(req.body);
-    return db.insertURL(req.body)
-      .then(res => res.json({res: res}));
+    return db.insertURL(base.req.body)
+    .then(val => res.json({val: val}));
   });
 
-  //read arguments passed to URL and save into JSON object
-  // If the URL is in the database return the database entry. If it is not in the database
-  // store it in there and return a short link
   app.get('/:tagId', (req, res) => {
     return db.lookupURL(req.params.tagId)
-    .then(url => {
-      res.json({url: url});
-    });
+    .then(url => res.json({url: url}));
   });
 
   app.get('/failhard', (req, res) => {
