@@ -25,8 +25,9 @@ function runApp(db){
   app.get('/:tagId', (req, res) => {
     return db.lookupURL(req.params.tagId)
     .then(url => {
-      console.log('url: '+url);
-      if(!url){
+        console.log(url.length);
+        console.log(url);
+      if(url.length < 1){
         db.insertURL({'longURL': req.params.tagId});
         res.json({'longURL': req.params.tagId});
       }
