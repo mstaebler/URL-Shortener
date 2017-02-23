@@ -3,21 +3,24 @@ require('dotenv').config();
 const express = require('express'),
       app = express(),
       path = require('path'),
-      Promise = require('bluebird');
+      Promise = require('bluebird'),
+      bodyParser = require('body-parser');
 
 module.exports = require('./db')().then(runApp);
 
 function runApp(db){
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, '../../public')));
+  app.use(bodyParser.json());
 
   app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../index.html'));
+    res.sendFile(path.join(__dirname, '../../public/index.html'));
   });
 
-  // app.post('/api/shorten', (req, res) => {
-  //   return db.insertURL(req.whatever.whatever)
-  //     .then(res => res.json({whatever: res}));
-  // });
+  app.post('/api/shorten', (req, res) => {
+    console.log(req.body);
+    return db.insertURL(req.body)
+      .then(res => res.json({res: res}));
+  });
 
   //read arguments passed to URL and save into JSON object
   // If the URL is in the database return the database entry. If it is not in the database
@@ -25,17 +28,8 @@ function runApp(db){
   app.get('/:tagId', (req, res) => {
     return db.lookupURL(req.params.tagId)
     .then(url => {
-        console.log(url.length);
-        console.log(url);
-      if(url.length < 1){
-        db.insertURL({'longURL': req.params.tagId});
-        res.json({'longURL': req.params.tagId});
-      }
-      else res.json({url: url});
+      res.json({url: url});
     });
-    // if(db.lookupURL(req.params.tagId) === [])
-    // console.log(db.lookupURL(req.params.tagId));
-    //res.json({url: url})
   });
 
   app.get('/failhard', (req, res) => {
