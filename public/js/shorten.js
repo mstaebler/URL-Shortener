@@ -16,7 +16,7 @@ var app = new Vue({
                 .bind(this)
                 .then(function(response) {
                     console.log(response.data.shortURL);
-                    this.shortURL = `http://${response.data.shortURL}`;
+                    this.shortURL = response.data.shortURL;
                 })
                 .catch(function(error) {
                     console.log(error);
