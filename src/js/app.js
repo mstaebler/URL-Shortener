@@ -22,7 +22,7 @@ function runApp(db){
 
   app.post('/api/shorten', (req, res, next) => {
     return db.insertURL(req.body)
-    .then(obj => res.json({shortURL: `localhost:3000/${obj.insertedId}`}))
+    .then(obj => res.json({shortURL: `https://webshort.herokuapp.com/${obj.insertedId}`}))
     .catch(next);
   });
 
