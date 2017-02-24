@@ -19,7 +19,7 @@
             <p>{{ message }}</p>
             <input v-model="url">
             <button v-on:click="shorten">Shorten</button>
-            <p>{{ shortURL }}</p>
+            <p><a v-bind:href="shortURL">{{ shortURL }}</a></p>
         </div>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://unpkg.com/vue/dist/vue.js"></script>

@@ -3,21 +3,28 @@ var app = new Vue({
     data: {
         message: 'Micro URL shortening service',
         url: 'enter a URL here..',
-        shortURL: 'short url will be here'
+        shortURL: ''
     },
     methods: {
         shorten: function() {
-            axios.post('/api/shorten', {
-                'longURL': this.url
-            })
-            .bind(this)
-            .then(function(response) {
-                console.log(response.data.shortURL);
-                this.shortURL = response.data.shortURL;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+            var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+            var regex = new RegExp(expression);
+            if (this.url.match(regex)) {
+                axios.post('/api/shorten', {
+                    'longURL': this.url
+                })
+                .bind(this)
+                .then(function(response) {
+                    console.log(response.data.shortURL);
+                    this.shortURL = `http://${response.data.shortURL}`;
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            } else {
+                alert("invalid url!");
+            }
+
         }
     }
 });
