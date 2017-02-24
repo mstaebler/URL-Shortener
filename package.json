@@ -20,7 +20,8 @@
   },
   "scripts": {
     "test": "make test",
-    "dev": "nodemon src/js/app.js"
+    "dev": "nodemon src/js/app.js",
+    "start": "node src/js/app.js"
   },
   "repository": {
     "type": "git",
