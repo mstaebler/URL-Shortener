@@ -32,14 +32,6 @@ function runApp(db){
     .catch(next);
   });
 
-  app.get('/failhard', (req, res) => {
-    return Promise.reject(new Error('Me a stupid error yo.'));
-    // calling this endpoint will result in an error being handed into next()
-    // which will bypass any other handlers defined below this, and go straight to the
-    // error handler at the end of this file that i added
-  });
-
-  // this will catch errs, or at least it should, you should try it, easy to do
   app.use(function(err, req, res, next) {
       res.error = err;
       res.status(err.status || 500);
@@ -48,6 +40,4 @@ function runApp(db){
       });
       next(err);
   });
-
-
 }
