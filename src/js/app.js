@@ -9,6 +9,8 @@ const express = require('express'),
 
 module.exports = require('./db')().then(runApp);
 
+app.listen(process.env.port || 3000);
+
 function runApp(db){
   app.use(express.static(path.join(__dirname, '../../public')));
   app.use(bodyParser.json());
@@ -47,5 +49,5 @@ function runApp(db){
       next(err);
   });
 
-  app.listen(process.env.port || 3000);
+
 }
